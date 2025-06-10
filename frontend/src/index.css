@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+
+
+body {
+
+  font-family: 'Cairo', sans-serif;
+
+}
+
+input::-webkit-input-placeholder { 
+  text-align: center; 
+  }
+
+  .card {
+
+    border-radius: var(--border-radius);
+  }
+
+  .card .inner {
+    padding: 25px;
+    
+    background: #222222;
+    color: #fff;
+    border-radius: var(--border-radius);
+  }
+
+  @keyframes fillWater {
+    from {
+      height: 0%;
+    }
+    to {
+      height: 100%;
+    }
+  }
+
+  .water {
+    height: 0%; animation: fillWater 2s ease-in-out forwards;
+  }
