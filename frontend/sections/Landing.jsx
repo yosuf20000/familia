@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext'
 import Login from '../components/auths/SigninForm'
 import TypingEffect from '../components/TypingEffect';
+import SignupForm from '../components/auths/SignupForm';
 
 const stats = [
     { name: 'Hours per week', value: '40', main: "إدارة الديون", points: ["تحديد من يَدين لمن وبأي مبلغ، بناءً على المصاريف المدفوعة من قبل كل شخص."] },
@@ -31,6 +32,16 @@ function Landing() {
 
             }
         }
+
+        if (location.pathname === '/signup') {
+            if (user) {
+                setCount(1);
+                navigate('/', { replace: true }); // redirect back to main
+            } else {
+                setCount(3);
+
+            }
+        }
     }, [location.pathname]);
 
     // Update URL when count changes
@@ -42,7 +53,7 @@ function Landing() {
         <div className='flex flex-row-reverse min-h-screen max-sm:flex-wrap max-md:flex-col  '>
 
             
-            <div className="relative isolate overflow-hidden bg-white py-24 sm:py-32 xl:py-30 flex-grow">
+            <div className="relative isolate overflow-hidden bg-white   flex-grow">
                 <img
                     alt=""
                     src={fbackground }
@@ -50,12 +61,13 @@ function Landing() {
                 />
 
                 {count == 2 && !user ? <Login /> : ""}
-                {count == 1 &&<div className=" px-6 py-24 sm:py-32 lg:px-8">
+                {count == 3 && !user ? <SignupForm /> : ""}
+                {count == 1 &&<div className=" px-6  sm:py-32 lg:px-8">
                     {count == 1 ?
                         <div className="mx-auto max-w-2xl text-center">
                             {/* <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-7xl">!انشئ مجموعتك الان</h2> */}
                             <TypingEffect />
-                            <p className="mt-8 text-lg font-medium text-pretty text-gray-100 sm:text-xl/8 text-justify text-right">
+                            <p className="mt-8 text-lg font-medium text-pretty text-gray-100 sm:text-xl/8 text-justify ">
                                 هو تطبيق بسيط يهدف إلى تنظيم الشؤون المالية داخل مجموعة من الأفراد (مثل أفراد العائلة أو الأصدقاء المشتركين في مصاريف). يضمن هذا النظام الشفافية والعدالة في تسجيل وتوزيع المصاريف والديون، ويعطي لكل فرد حقه بدقة.
                             </p>
 
@@ -64,6 +76,17 @@ function Landing() {
                                 {!user ? <button
                                     type="button"
                                     className="rounded-md bg-white gap-x-2  px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+                                    onClick={() => {
+                                        if (!user) {
+                                            navigate('/signup', { replace: true });
+                                            setCount(3)
+                                        } else {
+                                            navigate('groups/create')
+
+                                        }
+
+                                    }}
+
                                 >
                                     حساب جديد
                                 </button> : ""}
@@ -71,12 +94,11 @@ function Landing() {
                                     type="button"
                                     className="inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                     onClick={() => {
-                                        console.log(user);
                                         if (!user) {
                                             navigate('/login', { replace: true });
                                             setCount(2)
                                         } else {
-                                            console.log(user);
+                                            navigate('groups/create')
 
                                         }
 

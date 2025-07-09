@@ -1,20 +1,11 @@
 import React from 'react'
-import { GrTransaction, GrGroup } from "react-icons/gr";
-import { GiReceiveMoney } from "react-icons/gi";
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { IoHome } from "react-icons/io5";
+import { Link, useLocation } from "react-router-dom";
+import { navigations } from '.';
+
 
 
 
 function Nav() {
-    const navigation = [
-        { name: 'الرئيسة', href: '/', icon: IoHome, current: true },
-        { name: 'الحوالات', href: '/transactions', icon: GrTransaction, current: true },
-        { name: 'الغروض', href: '/loans', icon: GiReceiveMoney, current: false },
-        { name: 'المجموعات', href: '/groups', icon: GrGroup, current: false },
-
-
-    ]
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
@@ -25,7 +16,7 @@ function Nav() {
         <div className='flex flex-col border-b border-gray-200  '>
 
 
-            {navigation.map((item) => {
+            {navigations.map((item) => {
                 const isActive = location.pathname === item.href;
 
 

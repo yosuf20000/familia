@@ -7,19 +7,28 @@ import sar from '../src/assets/sar.svg'
 import axios from 'axios'
 import Context from '../sections/Context';
 import { SelectedGroupContext } from './Layout';
-function AddTransaction({ openDialog, setOpenDialgo, selectedGroup }) {
+import { useGroupAccess } from '../contexts/GroupAccessContext';
+function AddTransaction({}) {
     const [amount, setAmount] = useState('');
-    const [userLoan, setUserLoan] = useState([]);
-    const [submitted, setSubmitted] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    
+    // const [userLoan, setUserLoan] = useState([]);
+    // const [submitted, setSubmitted] = useState(false);
+    // const [loading, setLoading] = useState(false);
+    // const [error, setError] = useState(null);
+
+        const {
+            handleTransactionSubmit,
+            loading,
+            submitted,
+            userLoan,
+            error,
+            openDialog,
+            setOpenDialgo
+
+
+        } = useGroupAccess();
+
 
     
-
-
-
-
 
     const handleChangeAmount = (e) => {
         const newAmount = e.target.value;
@@ -29,41 +38,9 @@ function AddTransaction({ openDialog, setOpenDialgo, selectedGroup }) {
         }
     };
 
-    useEffect(() => {
-        try {
-            axios.get(`${import.meta.env.VITE_API_URL}/api/v1/loans/user`)
-                .then(res => {
-                    setUserLoan(res.data)
 
+    // done 
 
-                })
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-
-
-    }, [])
-
-    const handleTransactionSubmit = async (e) => {
-        e.preventDefault()
-        setLoading(true);    // Start spinner
-        setError(null);      // Reset error state
-        try {
-            const res = axios.post(`${import.meta.env.VITE_API_URL}/api/v1/transactions/make`, {
-                amount: Number(amount),
-                loanId: userLoan[0]?.id,
-                accountId: selectedGroup?.groupId
-            })
-            setSubmitted(true)
-
-        } catch (error) {
-            setError(err.message || 'Something went wrong');
-
-        } finally {
-            setLoading(false); // Stop spinner
-
-        }
-    }
 
 
 
@@ -83,7 +60,11 @@ function AddTransaction({ openDialog, setOpenDialgo, selectedGroup }) {
                 
             </DialogBackdrop>
 
-            <form className="fixed inset-0 z-10 w-screen overflow-y-auto h" onSubmit={handleTransactionSubmit}>
+            <form className="fixed inset-0 z-10 w-screen overflow-y-auto h" onSubmit={(e) => {
+                handleTransactionSubmit(e, amount)
+
+
+            }}>
                 <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <DialogPanel
                         transition

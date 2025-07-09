@@ -4,6 +4,7 @@ import { useAuth } from './AuthContext';
 const RedirectIfAuth = () => {
     const { user, loading } = useAuth();
 
+
     // if (loading) {
     //     return (
     //         <div className='  '>
@@ -19,7 +20,7 @@ const RedirectIfAuth = () => {
     //         </div>
     //     )
     // }
-    return user ? <Navigate to="/" replace /> : <Outlet />;
+    return user ? <Navigate to="/"   replace /> : <Outlet />;
 };
 
 export default RedirectIfAuth;

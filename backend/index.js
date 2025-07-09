@@ -14,6 +14,7 @@ const groupsRoutes = require('./routes/groups')
 const loansRoutes = require('./routes/loans')
 const usersRoutes = require('./routes/users')
 const userSessions = require('./routes/user-sessions')
+const staticsRoutes = require('./routes/ststics')
 
 
 
@@ -65,6 +66,8 @@ app.use('/api/v1/users', usersRoutes)
 app.use('/api/v1/transactions', transactionsRoutes)
 app.use('/api/v1/groups', groupsRoutes)
 app.use('/api/v1/loans', loansRoutes)
+app.use('/api/v1/statics', staticsRoutes)
+
 app.get("/check",checkAuth, (req,res) => {
     res.send("after.auth")
 })

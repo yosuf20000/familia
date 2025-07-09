@@ -1,9 +1,7 @@
 const mydb = require('../db')
 
 
-const usrSession = async (req, res) => {
-    
-}
+
 const updateUserDefaultGroupId = async (req, res) => {
     // const { defaultGroupId } = req.body;
     const user_email = req.tokens.idToken.email
@@ -27,15 +25,15 @@ const updateUserDefaultGroupId = async (req, res) => {
 
 
     if (rows[0]) {
-        
+
         sql = `UPDATE users SET default_group_id = ? WHERE email = "${user_email}"`;
         mydb.execute(sql, [rows[0].groupId], (err) => {
             if (err) return res.status(500).json({ error: err.message });
             res.json({ success: true });
-          });
+        });
 
 
-    }else{
+    } else {
 
         return res.status(200).json(rows[0])
     }
@@ -46,8 +44,64 @@ const updateUserDefaultGroupId = async (req, res) => {
 
 }
 
+const searchUsers = async (req, res) => {
+    // const { defaultGroupId } = req.body;
+    // const user_email = req.tokens.idToken.email
+    const q = req.query.q
+    console.log(q);
+
+    const isId = /^\d+$/.test(q); // Only digits = treat as ID
+    try {
+        if (isId) {
+            [rows] = await mydb.execute(
+                'SELECT * FROM  users WHERE id = ?',
+                [parseInt(q)]
+            )
+        } else {
+            [rows] = await mydb.execute(
+                'SELECT * FROM users WHERE fname LIKE ? OR email LIKE ?',
+                [`%${q}%`, `%${q}%`]
+            )
+        }
+        console.log(rows);
+
+        res.json(rows);
+
+    } catch (err) {
+        console.error('DB error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+
+    }
+
+
+
+
+}
+
+const getUserByEmail = async (req, res) => {
+
+    try {
+        
+        const user_email = req.tokens.idToken.email
+        const sql = `SELECT * FROM users WHERE email = ?`;
+        const [rows] = await mydb.execute(sql, [user_email]);
+        const userId = rows.length ? rows[0].id : null;
+        res.status(200).json({ user: rows[0] });
+    } catch (error) {
+        res.status(200).json({ msg: error });
+
+    }
+
+
+}
+
+
+
+
 
 
 module.exports = {
-    updateUserDefaultGroupId
+    updateUserDefaultGroupId,
+    searchUsers,
+    getUserByEmail
 }

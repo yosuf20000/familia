@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
     Menu,
     MenuButton,
@@ -21,7 +21,12 @@ import Logo from './LogoCom'
 
 
 function Topbar() {
-    const { user, loading, setLoading, setUser } = useAuth();
+    const { user, loading, setLoading, setUser, moreUserInfo } = useAuth();
+        const navigate = useNavigate();
+        console.log(user);
+
+        
+    
 
 
 
@@ -77,6 +82,16 @@ function Topbar() {
                     <button
                         type="button"
                         className="rounded-md bg-white gap-x-2  px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+                        onClick={() => {
+                            if (!user) {
+                                navigate('/login', { replace: true });
+                            } else {
+                                navigate('groups/create')
+
+                            }
+
+                        }}
+                        
                     >
                         تسجيل دخول
                     </button>
@@ -91,9 +106,10 @@ function Topbar() {
                             className="size-8 rounded-full bg-gray-50"
                         />
                         <span className="hidden lg:flex lg:items-center">
-                            <span aria-hidden="true" className="ml-4 text-sm/6 font-semibold text-gray-900">
-                                {user?.email || "guest"}
-                            </span>
+                            {!loading && <span aria-hidden="true" className="ml-4 text-sm/6 font-semibold text-gray-900">
+
+                                {moreUserInfo? `${moreUserInfo.Fname} ${moreUserInfo.Lname} ${moreUserInfo.ID}` : "guest"}
+                            </span>}
                             <ChevronDownIcon aria-hidden="true" className="ml-2 size-5 text-gray-400" />
                         </span>
                     </MenuButton>

@@ -5,6 +5,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({children }) {
     const [user, setUser] = useState(null);
+    const [moreUserInfo, setMoreUserInfo ] = useState([])
     const [loading, setLoading] = useState(true); // wait for session check
     useEffect(() => {
         try {
@@ -22,11 +23,30 @@ export function AuthProvider({children }) {
         } catch (error) {
           console.error("Error fetching data:", error); 
         }
-    
+        if (user) {
+          
+          try {
+            axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/get-user-by-email`)
+                .then(res => {
+                    console.log(res.data);
+  
+                    setMoreUserInfo(res.data?.user)
+  
+                })
+        } catch (error) {
+  
+            console.error("Error fetching data:", error);
+        } finally {
+  
+        }
+        }
+
+
+
     
       }, [loading])
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, setLoading }}>
+    <AuthContext.Provider value={{ user, setUser, loading, setLoading, moreUserInfo }}>
       {children}
     </AuthContext.Provider>
   )

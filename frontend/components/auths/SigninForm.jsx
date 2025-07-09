@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import logoImg from '../../src/assets/logo.png'
 
@@ -14,6 +14,8 @@ function SigninForm() {
     const { user, loading, setLoading, setUser } = useAuth();
 
     const navigate = useNavigate();
+    const location = useLocation();
+
 
 
 
@@ -22,13 +24,14 @@ function SigninForm() {
         setLoading(true)
 
         try {
-            const res = await axios.post('http://localhost:3000/auth/login', {
+            const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
                 email,
                 password
             },)
                 .then(res => {
                     if (res.data?.isOk) {
                         setUser(res.data?.user)
+
 
                     }
 

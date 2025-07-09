@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
-import { BiCopyright } from "react-icons/bi";
+import { useNavigate } from 'react-router-dom';
+
 
 
 function UserGroups() {
     const [groupMembers, setGroupMembers] = useState([]);
+    const navigate = useNavigate();
+
     
     useEffect(() => {
         try {
@@ -30,7 +32,13 @@ function UserGroups() {
             <h1 className='text-gray-700  hover:text-indigo-600 font-bold' >مجموعاتي</h1>
             <div className='flex flex-col px-0 my-2 w-full '>
                 {groupMembers.map((group, index) => (
-                    <div key={group.groupId} className={`col-span-1 flex rounded-md shadow-xs mt-2 flex-row-reverse justify-between  items-center my-2 bg-indigo-800   cursor-pointer `}>
+                    <div key={group.groupId} className={`col-span-1 flex rounded-md shadow-xs mt-2 flex-row-reverse justify-between  items-center my-2 bg-indigo-800   cursor-pointer `}
+                    onClick={() => {
+                        navigate(`/groups/${group.groupTitle}`)
+
+                    }}
+                    
+                    >
                         <div
                             className={classNames(
                                 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import.meta.env
 import { ChevronRightIcon } from '@heroicons/react/20/solid'
 
-function Transactions() {
+function MyTransactions() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false); // wait for session check
 
@@ -122,4 +122,4 @@ function Transactions() {
   )
 }
 
-export default Transactions
+export default MyTransactions

@@ -5,6 +5,10 @@ const { generateSecretHash } = require('../utils/authUtils')
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 
+const mydb = require('../db')
+
+
+
 
 AWS.config.update({ region: 'ap-south-1' });
 const cognito = new AWS.CognitoIdentityServiceProvider()
@@ -119,7 +123,50 @@ const logOut = async (req, res) => {
 
 }
 
+const signup = async (req, res) => {
+    const {email, password, fname, lname} = req.body
+    console.log("here");
+    
+    
+
+    try {
+        const secretHash = generateSecretHash(email, process.env.CLIENT_ID, process.env.COGNITO_CLIENT_SECRET)
+        const signUpParams = {
+            ClientId: process.env.CLIENT_ID,
+            Username: email,
+            Password: password,
+            UserAttributes: [
+                { Name: 'email', Value: email},
+               
+
+            ],
+            SecretHash: secretHash
+
+        }
+
+        const result = await cognito.signUp(signUpParams).promise()
+        const userSub = result.UserSub
+        
+
+        // 
+        const conn = await mydb.getConnection()
+        await conn.execute(
+            'INSERT INTO users (cognito_sub, fname, lname, email) VALUES (?, ?, ?, ?)', 
+            [userSub, fname, lname, email]
+        )
+
+        conn.release()
+
+        res.status(201).json({message:'SignUp successful ', userSub})
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Signup failed', details: err.message });
+    }
+}
+
 module.exports = {
     logIn,
-    logOut
+    logOut,
+    signup
 }

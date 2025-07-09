@@ -2,6 +2,7 @@ import { CheckIcon, HandThumbUpIcon, UserIcon } from '@heroicons/react/20/solid'
 import { useContext } from 'react';
 import dayjs from 'dayjs';
 import { CiEdit } from "react-icons/ci";
+import { Link } from 'react-router-dom';
 
 
 
@@ -11,24 +12,31 @@ function classNames(...classes) {
 
 export default function GroupMembers({ ...group }, key) {
   console.log(group);
-  
+
 
 
 
   return (
-    <div className="flow-root border-b-4 border-indigo-800 rounded-2xl p-2  ">
-      <div className='flex justify-between w-full  bg-indigo-800/80 rounded-md '>
+    <div className="flow-root  border-indigo-800 rounded-md p-4 mt-2  ">
+      <div className='flex justify-between w-full  bg-indigo-800/80 rounded-md  '
+        onClick={() => {
+          console.log(group?.groupTitle);
 
-        <h1 className='  my-2 p-2 rounded-sm text-white font-bold '>{group?.groupTitle}</h1>
+        }}
+      >
+
+        <Link to={group?.groupTitle} >
+          <h1 className='  my-2 p-2 rounded-sm text-white font-bold '>{group?.groupTitle}</h1>
+        </Link>
         <h1 className=' my-2 p-2 rounded-sm text-white font-bold '>12</h1>
         <span className='  self-stretch  relative flex items-center w-10 justify-center text-xl  bg-black/40 hover:bg-black/10 rounded-sm text-white font-bold '><CiEdit className='' />
         </span>
       </div>
 
-      <ul role="list" className="-mb-8">
+      <ul role="list" className="-mb-8 shadow-sm rounded-sm p-4 ">
         {group.members.map((member, index) => (
-          <li key={key}>
-            <div className="relative pb-8  ">
+          <li key={key} className=''>
+            <div className="relative pb-8   ">
               {/* {index !== group.members.length - 1 ? (
                 <span aria-hidden="true" className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" />
               ) : null} */}
@@ -45,8 +53,8 @@ export default function GroupMembers({ ...group }, key) {
                 </div>
                 <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                   <div>
-                    <p className="text-sm font-bold text-indigo-700">
-                      {member?.fname}{' '}
+                    <p className="text-sm font-bold text-indigo-700 w-20">
+                      {member?.fname}
                       {/* <a href={event.href} className="font-medium text-gray-900">
                         {event.target}
                       </a> */}
@@ -54,7 +62,7 @@ export default function GroupMembers({ ...group }, key) {
                   </div>
                   <div className="text-right text-sm whitespace-nowrap text-gray-500">
                     {/* <time dateTime={member?.joiningDate}>{member?.joiningDate}</time> */}
-                    <p className='font-bold'>Joined: {dayjs(member.joiningDate).format('MMMM D, YY')}</p>
+                    <p className='font-bold text-center '>Joined: {dayjs(member.joiningDate).format('MMMM D, YY')}</p>
                   </div>
                   <span className="inline-flex items-center gap-x-0.5 rounded-md  px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/10 ring-inset">
 

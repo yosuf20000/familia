@@ -3,18 +3,11 @@ import { GrTransaction, GrGroup } from "react-icons/gr";
 import { GiReceiveMoney } from "react-icons/gi";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { IoHome } from "react-icons/io5";
+import { navigations } from '.';
 
 
 
 function NavDeskTop() {
-    const navigation = [
-        { name: 'الرئيسة', href: '/', icon: IoHome, current: true },
-        { name: 'الحوالات', href: '/transactions', icon: GrTransaction, current: true },
-        { name: 'القروض', href: '/loans', icon: GiReceiveMoney, current: false },
-        { name: 'المجموعات', href: '/groups', icon: GrGroup, current: false },
-
-
-    ]
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
@@ -25,7 +18,7 @@ function NavDeskTop() {
         <div className='flex max-lg:hidden gap-6 flex-row-reverse   '>
 
 
-            {navigation.map((item) => {
+            {navigations.map((item) => {
                 const isActive = location.pathname === item.href;
 
 

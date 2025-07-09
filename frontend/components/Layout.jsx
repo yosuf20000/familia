@@ -30,11 +30,10 @@ export const SideBarContext = createContext();
 export const SelectedGroupContext = createContext();
 
 
-export default function Layout({user}) {
+export default function Layout({children}) {
     const [selectedGroup, setSelectedGroup] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
-    console.log(user);
     
 
 
@@ -69,10 +68,10 @@ export default function Layout({user}) {
                                     <Logo />
                                     <nav className="flex flex-1 flex-col">
                                         <Nav />
-                                    <UserGroups />
+                                    
                                     </nav>
 
-                                    <WrapTransaction />
+                                    {/* <WrapTransaction /> */}
                                 </div>
                             </DialogPanel>
                         </div>

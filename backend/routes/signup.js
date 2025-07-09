@@ -13,6 +13,8 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
 
 router.post('/signup', async (req, res) => {
     const {email, password, fname, lname} = req.body
+    console.log("here");
+    
     
 
     try {
