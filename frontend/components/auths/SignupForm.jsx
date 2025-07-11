@@ -7,7 +7,8 @@ function SignupForm() {
         email: '',
         password: '',
         fname: "",
-        lname: ""
+        lname: "",
+        username: ""
     });
     const [error, setError] = useState('');
 
@@ -99,6 +100,25 @@ function SignupForm() {
                                 type="email"
                                 name="email"
                                 placeholder="youremail@example.com"
+                                onChange={handleChange}
+                                required
+                                aria-describedby="email-optional"
+                                className={`${inputStyle} `}
+                            />
+                        </div>
+                    </div>
+                    <div >
+                        {/* <div className="flex justify-end">
+                            <label htmlFor="email" className="block text-sm/6 font-medium se text-gray-900">
+                                الايميل
+                            </label>
+                        </div> */}
+                        <div className="mt-2">
+                            <input
+                                id="username"
+                                type="text"
+                                name="username"
+                                placeholder="اسم المستخدم"
                                 onChange={handleChange}
                                 required
                                 aria-describedby="email-optional"

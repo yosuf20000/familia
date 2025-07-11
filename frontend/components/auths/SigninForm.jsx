@@ -7,14 +7,12 @@ import logoImg from '../../src/assets/logo.png'
 
 
 function SigninForm() {
-    const [email, setEmail] = useState('');
+    const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     // const [loading, setLoading] = useState(false); // wait for session check
     const { user, loading, setLoading, setUser } = useAuth();
 
-    const navigate = useNavigate();
-    const location = useLocation();
 
 
 
@@ -25,7 +23,7 @@ function SigninForm() {
 
         try {
             const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
-                email,
+                identifier,
                 password
             },)
                 .then(res => {
@@ -83,7 +81,7 @@ function SigninForm() {
 
 
                         <div className='col-span-2 flex  items-center gap-2  w-full justify-between flex-col'>
-                            <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-7xl my-4 ">مرحبا بكم </h2>
+                            <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-7xl my-4 "></h2>
 
 
 
@@ -95,11 +93,11 @@ function SigninForm() {
                                 </div>
                                 <input
                                     id="email"
-                                    type="email"
-                                    name="email"
-                                    value={email}
+                                    type="text"
+                                    name="identifier"
+                                    value={identifier}
                                     placeholder='youremail@ex.com'
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={e => setIdentifier(e.target.value)}
                                     required
                                     aria-describedby="email-optional"
                                     className="block w-full  rounded-md border-b-6    text-base text-gray-100 placeholder:text-gray-100 bg-black/30  sm:text-md/6  p-5 focus:outline-none "
@@ -128,7 +126,7 @@ function SigninForm() {
                             </a>
                         </div> */}
                             <div>
-                                <button type="submit" className='flex  justify-center rounded-md bg-indigo-600/10 px-10 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-2 mx-auto '>تسجيل دخول</button>
+                                <button type="submit" className='flex  justify-center rounded-md bg-white/60 px-10 py-1.5 text-sm/6 font-semibold text-indigo-600 shadow-xs hover:bg-white/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-2 mx-auto '>تسجيل دخول</button>
                             </div>
 
                             {message && <p className='text-red-300'>{message}</p>}

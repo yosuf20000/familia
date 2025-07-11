@@ -23,7 +23,7 @@ import Logo from './LogoCom'
 function Topbar() {
     const { user, loading, setLoading, setUser, moreUserInfo } = useAuth();
         const navigate = useNavigate();
-        console.log(user);
+        console.log(moreUserInfo);
 
         
     
@@ -108,7 +108,7 @@ function Topbar() {
                         <span className="hidden lg:flex lg:items-center">
                             {!loading && <span aria-hidden="true" className="ml-4 text-sm/6 font-semibold text-gray-900">
 
-                                {moreUserInfo? `${moreUserInfo.Fname} ${moreUserInfo.Lname} ${moreUserInfo.ID}` : "guest"}
+                                {moreUserInfo? `${moreUserInfo.Fname} ${moreUserInfo?.Lname} ${moreUserInfo?.ID}` : "guest"}
                             </span>}
                             <ChevronDownIcon aria-hidden="true" className="ml-2 size-5 text-gray-400" />
                         </span>

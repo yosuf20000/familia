@@ -10,135 +10,112 @@ const mydb = require('../db')
 
 
 
-AWS.config.update({ region: 'ap-south-1' });
+AWS.config.update({
+    region: process.env.AWS_REGION, // fallback
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+})
 const cognito = new AWS.CognitoIdentityServiceProvider()
 
 
 
 const logIn = async (req, res) => {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
+  
     try {
-        const params = {
-            AuthFlow: 'USER_PASSWORD_AUTH',
-            ClientId: process.env.CLIENT_ID,
-            AuthParameters: {
-                USERNAME: email,
-                PASSWORD: password,
-                SECRET_HASH: generateSecretHash(
-                    email,
-                    process.env.CLIENT_ID,
-                    process.env.COGNITO_CLIENT_SECRET
-                )
-            }
+      const params = {
+        AuthFlow: 'USER_PASSWORD_AUTH',
+        ClientId: process.env.CLIENT_ID,
+        AuthParameters: {
+          USERNAME: identifier,
+          PASSWORD: password,
+          SECRET_HASH: generateSecretHash(identifier, process.env.CLIENT_ID, process.env.COGNITO_CLIENT_SECRET)
         }
-
-        await cognito.initiateAuth(params).promise()
-            .then(response => {
-                const { IdToken, AccessToken, RefreshToken } = response.AuthenticationResult;
-
-                req.session.loggedIn = true;
-                req.session.tokens = {
-                    idToken: IdToken,
-                    accessToken: AccessToken,
-                    refreshToken: RefreshToken
-                };
-                req.session.email
-                req.session.loginTime = new Date().toISOString()
-                req.session.isActive = true;
-
-
-
-                req.session.save(err => {
-                    if (err) {
-                        console.error('Session save error:', err);
-                        return res.status(500).json({ message: 'Session save failed' });
-                    }
-                    const decoded = jwt.decode(req.session?.tokens?.idToken)
-
-                    dynamodb.update({
-                        TableName: "sessions",
-                        Key: { id: `sess:${req.sessionID}` },
-                        UpdateExpression: 'SET email = :e, loginTime = :l, isActive = :a',
-                        ExpressionAttributeValues: {
-                            ':e': email,
-                            ':l': req.session.loginTime,
-                            ':a': true
-                        }
-                    }).promise()
-
-
-                    return res.json({ message: 'Login successful', isOk: true, user: decoded });
-                })
-
-
-            })
-
-
-
+      };
+  
+      const response = await cognito.initiateAuth(params).promise();
+      const { AccessToken, IdToken, RefreshToken } = response.AuthenticationResult;
+  
+      // Get user attributes
+      const userData = await cognito.getUser({ AccessToken }).promise();
+      const emailAttr = userData.UserAttributes.find(attr => attr.Name === 'email');
+      const email = emailAttr ? emailAttr.Value : null;
+  
+      req.session.loggedIn = true;
+      req.session.tokens = { idToken: IdToken, accessToken: AccessToken, refreshToken: RefreshToken };
+      req.session.email = email;    // <-- Always set email here
+      req.session.loginTime = new Date().toISOString();
+      req.session.isActive = true;
+  
+      req.session.save(err => {
+        if (err) {
+          console.error('Session save error:', err);
+          return res.status(500).json({ message: 'Session save failed' });
+        }
+        // Optionally decode token for user info
+        const decoded = jwt.decode(IdToken);
+        return res.json({ message: 'Login successful', isOk: true, user: decoded });
+      });
+  
     } catch (err) {
-
-        console.error('Login error:', err);
-        return res.status(401).json({ error: err.message || 'Login failed' });
-
+      console.error('Login error:', err);
+      return res.status(401).json({ error: err.message || 'Login failed' });
     }
-
-
-}
-
+  };
+  
+  
 const logOut = async (req, res) => {
+
+    const formatToMySQLDateTime = (date) => {
+        return new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+      };
     try {
-        const { email } = req.body;
         if (!req.session) return res.status(400).send('No session found');
-        // req.session.logoutTime = new Date().toISOString();
-        req.session.isActive = false;
+        const logoutTime = new Date();
+        const loginTime = new Date(req.session.loginTime); // Make sure it's a Date object
         const sessionId = req.sessionID;
-        const loginTime = req.session.loginTime;        
-
-        req.session.save(async () => {
-
-            dynamodb.put({
-                TableName: 'SessionAnalytics',
-                Item: {
-                    id: sessionId,
-                    email: email,
-                    loginTime,
-                    logoutTime: new Date().toISOString(),
-                    durationSeconds: Math.floor((new Date() - new Date(loginTime)) / 1000)
-                }
-            }).promise();
-
-        });
-
+        const formattedLoginTime  = formatToMySQLDateTime(req.session.loginTime);
+        const email = req.session.email;
+        const formattedLogoutTime  = formatToMySQLDateTime(new Date());
+        const durationSeconds = Math.floor((logoutTime - loginTime) / 1000);
+    
+        // Save analytics before destroying session
+        const sql = `
+          INSERT INTO sessionAnalytics (session_id, email, login_time, logout_time, duration_seconds)
+          VALUES (?, ?, ?, ?, ?)
+        `;
+        await mydb.execute(sql, [sessionId, email, formattedLoginTime, formattedLogoutTime, durationSeconds]);
+    
+        // Destroy session
         req.session.destroy(err => {
-            if (err) return res.status(500).json({ message: 'Error destroying session', isOk:false});
-            res.clearCookie('connect.sid'); // VERY IMPORTANT
-            res.json({ message: 'Logged out', isOk: true });
+          if (err) return res.status(500).json({ message: 'Error destroying session', isOk: false });
+    
+          res.clearCookie('connect.sid');
+          return res.json({ message: 'Logged out successfully', isOk: true });
         });
+    
+      } catch (error) {
+        console.error("Logout error:", error);
+        return res.status(500).json({ message: 'Logout failed', isOk: false });
+      }
+    };
 
 
-    } catch (error) {
-        return res.status(401).json({ message: err.message || 'Logout failed', isOk:false });
-
-    }
-
-}
 
 const signup = async (req, res) => {
-    const {email, password, fname, lname} = req.body
+    const { email, password, fname, lname, username } = req.body
     console.log("here");
-    
-    
+
+
 
     try {
-        const secretHash = generateSecretHash(email, process.env.CLIENT_ID, process.env.COGNITO_CLIENT_SECRET)
+        const secretHash = generateSecretHash(username, process.env.CLIENT_ID, process.env.COGNITO_CLIENT_SECRET)
         const signUpParams = {
             ClientId: process.env.CLIENT_ID,
-            Username: email,
+            Username: username,
             Password: password,
             UserAttributes: [
-                { Name: 'email', Value: email},
-               
-
+                { Name: 'email', Value: email },  // email is an attribute, username is NOT
             ],
             SecretHash: secretHash
 
@@ -146,18 +123,18 @@ const signup = async (req, res) => {
 
         const result = await cognito.signUp(signUpParams).promise()
         const userSub = result.UserSub
-        
+
 
         // 
         const conn = await mydb.getConnection()
         await conn.execute(
-            'INSERT INTO users (cognito_sub, fname, lname, email) VALUES (?, ?, ?, ?)', 
+            'INSERT INTO users (cognito_sub, fname, lname, email) VALUES (?, ?, ?, ?)',
             [userSub, fname, lname, email]
         )
 
         conn.release()
 
-        res.status(201).json({message:'SignUp successful ', userSub})
+        res.status(201).json({ message: 'SignUp successful ', userSub })
 
     } catch (err) {
         console.error(err);

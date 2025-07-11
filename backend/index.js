@@ -29,7 +29,7 @@ app.use(express.json()); // Parse JSON request bodies
 app.use(
     cors(
         { 
-            origin: 'http://localhost:5173',   
+            origin: process.env.API_ORIGIN,   
             credentials: true
         }
     )
@@ -37,7 +37,7 @@ app.use(
 app.use(session({
     store: new DynamoDBStore({
         table: 'sessions',            // DynamoDB table name
-        AWSRegion: 'ap-south-1',       // your AWS region
+        AWSRegion: process.env.AWS_REGION,       // your AWS region
         createTable: true             // true = auto-create table
       }),
     secret: process.env.SESSION_SECRET || 'your-secret',
@@ -78,5 +78,5 @@ app.get("/check",checkAuth, (req,res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on ${'HOSTNMAE'}${PORT}`);
 });

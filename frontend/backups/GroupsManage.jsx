@@ -41,7 +41,7 @@ function GroupsManage() {
                 {count == 1 ? 
                 <div className="mx-auto max-w-2xl text-center">
                     <h2 className="text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl">!انشئ مجموعتك الان</h2>
-                    <p className="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">
+                    <p className="mt-8 text-lg font-medium  text-gray-500 sm:text-xl/8 text-center">
                         هو تطبيق بسيط يهدف إلى تنظيم الشؤون المالية داخل مجموعة من الأفراد (مثل أفراد العائلة أو الأصدقاء المشتركين في مصاريف). يضمن هذا النظام الشفافية والعدالة في تسجيل وتوزيع المصاريف والديون، ويعطي لكل فرد حقه بدقة.
                     </p>
                     <div className='  flex items-center  justify-end mt-4 gap-4 px-6'>

@@ -11,7 +11,7 @@ import SignupForm from '../components/auths/SignupForm';
 
 const stats = [
     { name: 'Hours per week', value: '40', main: "إدارة الديون", points: ["تحديد من يَدين لمن وبأي مبلغ، بناءً على المصاريف المدفوعة من قبل كل شخص."] },
-    { name: 'Paid time off', value: 'Unlimited', main: "تحليل مالي", points: ["تحديد من يَدين لمن وبأي مبلغ، بناءً على المصاريف المدفوعة من قبل كل شخص.", "النظام يحسب تلقائيًا كم يجب على كل شخص أن يدفع أو يسترد."] },
+    { name: 'Paid time off', value: 'Unlimited', main: "تحليل مالي", points: [ "النظام يحسب تلقائيًا كم يجب على كل شخص أن يدفع أو يسترد."] },
     { name: 'Offices worldwide', value: '12', main: "حسابات فردية", points: ["لكل فرد حساب خاص يتم فيه تسجيل المدفوعات التي قام بها أو المبالغ التي اقترضها."] },
 ]
 
@@ -67,7 +67,7 @@ function Landing() {
                         <div className="mx-auto max-w-2xl text-center">
                             {/* <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-7xl">!انشئ مجموعتك الان</h2> */}
                             <TypingEffect />
-                            <p className="mt-8 text-lg font-medium text-pretty text-gray-100 sm:text-xl/8 text-justify ">
+                            <p className="mt-8 text-lg font-medium text-pretty text-gray-100 sm:text-xl/8 text-justify " dir='rtl'>
                                 هو تطبيق بسيط يهدف إلى تنظيم الشؤون المالية داخل مجموعة من الأفراد (مثل أفراد العائلة أو الأصدقاء المشتركين في مصاريف). يضمن هذا النظام الشفافية والعدالة في تسجيل وتوزيع المصاريف والديون، ويعطي لكل فرد حقه بدقة.
                             </p>
 
@@ -123,9 +123,9 @@ function Landing() {
                                     <div className='flex flex-col w-full items-center justify-center max-sm:text-sm'>
                                         {stat.points.map((point, index) => {
                                             return (
-                                                <div className='flex flex-row-reverse gap-2 items-center'>
-                                                    <dt className="text-base/7 text-gray-300   text-right mt-2">{index + 1}</dt>
-                                                    <dt className="text-base/7 text-gray-300 border-r-4 mb-2 text-right px-2">{point}</dt>
+                                                <div className='flex flex-row-reverse gap-2 items-center w-full'>
+                                                    <dt className="text-base/7 text-gray-300   text-right ">{index + 1}</dt>
+                                                    <dt className="text-base/7 text-gray-300 border-r-4 mb-2 text-right px-2" dir='rtl'>{point}</dt>
                                                 </div>
 
                                             )
