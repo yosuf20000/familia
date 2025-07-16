@@ -1,0 +1,40 @@
+version: "3.8" 
+services: 
+  mysql:
+    image: mysql
+    container_name: mysql_container
+    volumes: 
+      - mysqldbdata:/var/lib/mysql
+    env_file:
+      - ./env/mysql.env
+    ports: 
+      - 3310:3306
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes: 
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports: 
+      - 3000:3000
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mysql
+    container_name: backend
+  frontend:
+    stdin_open: true
+    tty: true
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes: 
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports: 
+      - 5173:5173
+    depends_on:
+      - backend
+volumes: 
+  mysqldbdata:

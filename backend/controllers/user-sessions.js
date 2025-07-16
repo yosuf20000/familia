@@ -2,7 +2,6 @@ const AWS = require('aws-sdk')
 const dynamodb = new AWS.DynamoDB.DocumentClient()
 const express = require('express')
 const { generateSecretHash } = require('../utils/authUtils')
-require('dotenv').config()
 const jwt = require('jsonwebtoken')
 
 const mydb = require('../db')
@@ -32,20 +31,24 @@ const logIn = async (req, res) => {
           SECRET_HASH: generateSecretHash(identifier, process.env.CLIENT_ID, process.env.COGNITO_CLIENT_SECRET)
         }
       };
+
+
   
       const response = await cognito.initiateAuth(params).promise();
       const { AccessToken, IdToken, RefreshToken } = response.AuthenticationResult;
-  
+
       // Get user attributes
       const userData = await cognito.getUser({ AccessToken }).promise();
       const emailAttr = userData.UserAttributes.find(attr => attr.Name === 'email');
-      const email = emailAttr ? emailAttr.Value : null;
+      const email = emailAttr ? emailAttr.Value : null; 
   
       req.session.loggedIn = true;
       req.session.tokens = { idToken: IdToken, accessToken: AccessToken, refreshToken: RefreshToken };
       req.session.email = email;    // <-- Always set email here
       req.session.loginTime = new Date().toISOString();
       req.session.isActive = true;
+ 
+
   
       req.session.save(err => {
         if (err) {
@@ -56,7 +59,7 @@ const logIn = async (req, res) => {
         const decoded = jwt.decode(IdToken);
         return res.json({ message: 'Login successful', isOk: true, user: decoded });
       });
-  
+   
     } catch (err) {
       console.error('Login error:', err);
       return res.status(401).json({ error: err.message || 'Login failed' });

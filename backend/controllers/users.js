@@ -78,7 +78,7 @@ const searchUsers = async (req, res) => {
 
 }
 
-const getUserByEmail = async (req, res) => {
+const getUserByEmail = async (req, res) => { 
 
     try {
         

@@ -1,9 +1,8 @@
 const express = require('express');
 const app = express();
-const PORT = 3000;
 require('dotenv').config()
 // const authRoutes = require('./routes/signup')
-const signinRoutes = require('./routes/signin')
+const PORT = process.env.PORT ;
 const cors = require('cors');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -15,6 +14,8 @@ const loansRoutes = require('./routes/loans')
 const usersRoutes = require('./routes/users')
 const userSessions = require('./routes/user-sessions')
 const staticsRoutes = require('./routes/ststics')
+
+
 
 
 
@@ -67,7 +68,7 @@ app.use('/api/v1/transactions', transactionsRoutes)
 app.use('/api/v1/groups', groupsRoutes)
 app.use('/api/v1/loans', loansRoutes)
 app.use('/api/v1/statics', staticsRoutes)
-
+ 
 app.get("/check",checkAuth, (req,res) => {
     res.send("after.auth")
 })
@@ -78,5 +79,6 @@ app.get("/check",checkAuth, (req,res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running on ${'HOSTNMAE'}${PORT}`);
+
+    console.log(`Server running on ${'HOSTNMAE'}${PORT}`);    
 });

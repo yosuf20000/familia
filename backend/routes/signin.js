@@ -1,7 +1,6 @@
 const express = require('express')
 const AWS = require('aws-sdk')
 const { generateSecretHash } = require('../utils/authUtils')
-require('dotenv').config()
 const router = express.Router()
 const jwt = require ('jsonwebtoken')
 
