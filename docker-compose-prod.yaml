@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql_container
+    volumes:
+      - mysqldbdata:/var/lib/mysql
+    env_file:
+      - ./env/mysql.env
+    ports:
+      - 3310:3306
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod  # Use production Dockerfile
+    ports:
+      - 3000:3000
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mysql
+    container_name: backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod  # Build + Serve via Nginx
+    ports:
+      - 5173:80                    # 80 inside container (Nginx), exposed as 5173
+    depends_on:
+      - backend
+    container_name: frontend
+
+volumes:
+  mysqldbdata:
