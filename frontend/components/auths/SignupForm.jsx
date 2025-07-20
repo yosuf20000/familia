@@ -35,6 +35,10 @@ function SignupForm() {
                 text: "تم تسجيل الحساب بنجاح",
                 is_ok: true
             });
+
+        
+
+
         } catch (err) {
             console.error(err);
             setMessage({
@@ -164,7 +168,7 @@ function SignupForm() {
                 </div>
 
             </form>
-            {message.text && <p className='p-2 bg-red-200'>{message.text}</p>}
+            {message.text && <p className={`p-2 ${message.is_ok? "bg-green-100" : "bg-red-100"} text-black `}>{message.text}</p>}
 
 
 
