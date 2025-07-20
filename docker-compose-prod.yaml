@@ -27,7 +27,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod  # Build + Serve via Nginx
     ports:
-      - 5173:80                    # 80 inside container (Nginx), exposed as 5173
+      - 80:80                    # 80 inside container (Nginx), exposed as 5173
     depends_on:
       - backend
     container_name: frontend
